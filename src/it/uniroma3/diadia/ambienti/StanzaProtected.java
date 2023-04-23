@@ -1,37 +1,26 @@
 package it.uniroma3.diadia.ambienti;
-import it.uniroma3.diadia.attrezzi.Attrezzo;
+
 import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.attrezzi.Attrezzo;
 
+public class StanzaProtected {
 
-/**
- * Classe Stanza - una stanza in un gioco di ruolo.
- * Una stanza e' un luogo fisico nel gioco.
- * E' collegata ad altre stanze attraverso delle uscite.
- * Ogni uscita e' associata ad una direzione.
- * 
- * @author docente di POO 
- * @see Attrezzo
- * @version base 
-*/
-
-public class Stanza {
+	static final protected int NUMERO_MASSIMO_DIREZIONI = 4;
+	static final protected int NUMERO_MASSIMO_ATTREZZI = 10;
 	
-	static final private int NUMERO_MASSIMO_DIREZIONI = 4;
-	static final private int NUMERO_MASSIMO_ATTREZZI = 10;
+	protected String nome;
+	protected Attrezzo[] attrezzi;
+	protected int numeroAttrezzi;
+	protected Stanza[] stanzeAdiacenti;
+	protected int numeroStanzeAdiacenti;
+	protected String[] direzioni; 
+    protected Partita partita;
 	
-	private String nome;
-    private Attrezzo[] attrezzi;
-    private int numeroAttrezzi;
-    public Stanza[] stanzeAdiacenti;
-    private int numeroStanzeAdiacenti;
-	private String[] direzioni;
-	private Partita partita;
-	
-    /**
+	/**
      * Crea una stanza. Non ci sono stanze adiacenti, non ci sono attrezzi.
      * @param nome il nome della stanza
      */
-    public Stanza(String nome) {
+    public StanzaProtected(String nome) {
         this.nome = nome;
         this.numeroStanzeAdiacenti = 0;
         this.numeroAttrezzi = 0;
@@ -60,10 +49,6 @@ public class Stanza {
     			this.stanzeAdiacenti[numeroStanzeAdiacenti] = stanza;
     		    this.numeroStanzeAdiacenti++;
     		}
-    }
-    
-    public Attrezzo[] getAttrezzi() {
-    	return this.attrezzi;
     }
 
     /**
@@ -94,12 +79,12 @@ public class Stanza {
      * Restituisce la collezione di attrezzi presenti nella stanza.
      * @return la collezione di attrezzi nella stanza.
      */
-    public void stampaAttrezzi() {
+    public void getAttrezzi() {
     	if(numeroAttrezzi == 0)
-    		partita.getIo().mostraMessaggio(" - ");		// stanza senza attrezzi
+    		System.out.println(" - ");		// stanza senza attrezzi
     	else {
 	        for(int i=0; i<numeroAttrezzi; i++) {
-	        	partita.getIo().mostraMessaggio(attrezzi[i].toString());
+	        	System.out.println(attrezzi[i].toString());
 	        }
     	}
     }
@@ -192,22 +177,9 @@ public class Stanza {
 	/**
 	 * funzione che mostra i dati di una stanza 
 	 */
-	public String getDescrizione() {
-		StringBuilder descrizione = new StringBuilder();
-		
-		descrizione.append(this.getNome());
-		descrizione.append("\nUscite: ");
-		for(String direzione : this.getDirezioni())
-			if(direzione != null)
-				descrizione.append(" " + direzione);
-			else
-				descrizione.append(", " + direzione);
-		descrizione.append("\nAttrezzi nella stanza: ");
-		for(Attrezzo attrezzo : this.attrezzi)
-			if(attrezzo != null)
-				descrizione.append(attrezzo.toString());
-		
-		return descrizione.toString();
+	public void getDescrizione() {
+		partita.getIo().mostraMessaggio("Sei nella stanza: " + this.getNome() + "\nAttrezzi nella stanza: ");
+		getAttrezzi();
 	}
 	
 	public Boolean isBloccata() {

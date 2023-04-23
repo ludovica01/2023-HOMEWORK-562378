@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.uniroma3.diadia.diadia.Partita;
+import it.uniroma3.diadia.Partita;
 
 
 // Test che si riferisce alla classe partita e testa le funzioni :
