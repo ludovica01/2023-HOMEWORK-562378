@@ -1,20 +1,33 @@
 package it.uniroma3.diadia.giocatore;
-import it.uniroma3.diadia.attrezzi.Attrezzo;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-public class Borsa {
+import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.attrezzi.OrdinatorePerPeso;
+
+public class Borsa implements Ordinabile {
+	
 	public final static int DEFAULT_PESO_MAX_BORSA = 10; 
-	private Attrezzo[] attrezzi; 
-	private int numeroAttrezzi; 
+	private List<Attrezzo> attrezzi;
 	private int pesoMax; 
+
+	
 	
 	public Borsa() {
-		this(DEFAULT_PESO_MAX_BORSA);
+		this.attrezzi = new ArrayList<Attrezzo>();
 	}
 	  
-	public Borsa(int pesoMax) {
-		this.pesoMax = pesoMax; 
-		this.attrezzi = new Attrezzo[10];
-		this.numeroAttrezzi = 0;
+	public Borsa(int pesoMax, List<Attrezzo> attrezzi) {
+		this.pesoMax = pesoMax;
+		this.attrezzi = attrezzi;
 	}
 	 
 	/* 
@@ -22,15 +35,12 @@ public class Borsa {
 	 * @return true se lo inserisce
 	 */
 	public boolean addAttrezzo(Attrezzo attrezzo) {
-		if (this.getPeso() + attrezzo.getPeso() > this.getPesoMax()) 
+		// posso aggiungeere un nuovo attrezzo solo se con il suo peso non supero il peso massimo
+		if(pesoMax + attrezzo.getPeso() > DEFAULT_PESO_MAX_BORSA)
 			return false;
-		if (this.numeroAttrezzi==10) 
-			return false;
-		
-		this.attrezzi[this.numeroAttrezzi] = attrezzo; 
-		this.numeroAttrezzi++; 
-		return true;
+		return this.attrezzi.add(attrezzo);
 	}
+	
 	
 	/*
 	 * @return il peso massimo della borsa
@@ -42,15 +52,13 @@ public class Borsa {
 	/*
 	 * @return l'attrezzo cercato
 	 */
-	public Attrezzo getAttrezzo(String nomeAttrezzo) { 
-		Attrezzo a = null; 
-		for (int i= 0; i<this.numeroAttrezzi; i++) {
-			if(attrezzi[i]!= null) {	
-				if (this.attrezzi[i].getNome().equals(nomeAttrezzo)) 
-					a = attrezzi[i];
-			}
-		}
-	return a;
+	public Attrezzo getAttrezzo(String nomeAttrezzo) {
+		Attrezzo trovato = null;
+		for(Attrezzo a : attrezzi) 
+			if(a.getNome().equals(nomeAttrezzo)) 
+				trovato = a;
+			
+	return trovato;
 }
 	
 	/*
@@ -58,53 +66,138 @@ public class Borsa {
 	 */
 	public int getPeso() { 
 		int peso = 0;
-		for (int i= 0; i < this.numeroAttrezzi; i++) 
-			if(attrezzi[i]!= null) {	
-				peso += this.attrezzi[i].getPeso();
-				
-			}
-		return peso; 
-		} 
+		for(Attrezzo a : attrezzi)
+			peso += a.getPeso();
+			
+		return peso;
+	} 
 	
 	/*
 	 * @return true se la borsa è vuota
 	 */
 	public boolean isEmpty() { 
-		return this.numeroAttrezzi == 0; 
+		return attrezzi.isEmpty(); 
 		}
 	
 	/*
 	 * @return true se la borsa contiene quell'attrezzo
 	 */
-	public boolean hasAttrezzo(String nomeAttrezzo) { 
-		return this.getAttrezzo(nomeAttrezzo) != null;
+	public boolean hasAttrezzo(String attrezzo) { 
+		return this.getAttrezzo(attrezzo) != null;
 	}
 	
 	
-	public boolean removeAttrezzo(String nomeAttrezzo) { 
-		boolean removed = false; 
-		for(int i=0; i<this.numeroAttrezzi; i++) {
-			if(attrezzi[i]!= null) {	
-				if(attrezzi[i].getNome().equals(nomeAttrezzo)) {
-					removed = true;
-				    attrezzi[i] = null;
-				}
+	public Attrezzo removeAttrezzo(String attrezzo) {
+		for(Attrezzo a : attrezzi) {
+			if(a.getNome().equals(attrezzo)) {
+				attrezzi.remove(a);
+				return a;
 			}
 		}
-		return removed;
-	} 
+		return null;
+	}
+	
 	
 	public String toString() {
-	StringBuilder s = new StringBuilder(); 
-	if (!this.isEmpty()) {
-		s.append("Contenuto borsa ("+this.getPeso()+"kg/"+this.getPesoMax()+"kg): "); 
-		for (int i= 0; i < this.numeroAttrezzi; i++)
-			s.append(attrezzi[i].toString()+" ");
-	} 
-	else 
-		s.append("Borsa vuota"); 
+		
+		StringBuilder s = new StringBuilder(); 
+		if (!this.isEmpty()) {
+			s.append("Contenuto borsa ("+this.getPeso()+"kg/"+this.getPesoMax()+"kg): ");
+			s.append(this.getContenutoOrdinatoPerPeso());
+		} 
+		else 
+			s.append("Borsa vuota"); 
+		
+		return s.toString();
+		
+	}
+
+
 	
-	return s.toString(); }
+	/** metodo che restituisce la lista degli attrezzi nella borsa
+	 * ordinati per peso e quindi, a parità di pero, per nome */
+	public List<Attrezzo> getContenutoOrdinatoPerPeso() {
+		
+		Attrezzo comparator = new Attrezzo();
+		Collections.sort(attrezzi, new OrdinatorePerPeso());
+		
+		return attrezzi;
+		
+	}
+	
+	
+	/** metodo che restituisce l'insieme degli attrezzi nella borsa
+	 * ordinati per nome */
+	public SortedSet<Attrezzo> getContenutoOrdinatoPerNome() {
+		
+		SortedSet<Attrezzo> ordinata = new TreeSet<>(new OrdinatorePerPeso());
+		ordinata.addAll(attrezzi);
+		
+		return ordinata;
+		
+	}
+	
+	
+	@Override
+	public SortedSet<Attrezzo> ordinaPerNome() {
+		
+		SortedSet<Attrezzo> ordinata = new TreeSet<>(Comparator.comparing(Attrezzo::getNome));
+		ordinata.addAll(attrezzi);
+		
+		return ordinata;
+	}
+
+	
+	@Override
+	public List<Attrezzo> ordinaPerPeso() {
+		
+		List<Attrezzo> ordinata = new ArrayList<>(attrezzi);
+		Collections.sort(ordinata, Comparator.comparing(Attrezzo::getPeso));
+		
+		return ordinata;
+	}
+	
+	
+	public Map<Integer,Set<Attrezzo>> getContenutoRaggruppatoPerPeso() {
+		
+		Map<Integer,Set<Attrezzo>> mappa = new HashMap<>();
+		
+		for(Attrezzo a : attrezzi ) {
+			if(mappa.containsKey(a.getPeso())) {			// se già esiste il peso, devo aggiungere l'attrezzo corrente alla lista giusta
+				Set<Attrezzo> temp = mappa.get(a.getPeso());
+				temp.add(a);
+				mappa.replace(a.getPeso(), temp);
+			}
+			else {			// altrimenti devo creare una nuova coppia chiave,valore
+				Set<Attrezzo> temp = new HashSet<Attrezzo>();
+				mappa.put(a.getPeso(), temp);
+			}
+				
+		}
+		
+		return mappa;
+		
+	}
+
+	
+	
+	/**
+	 * metodo che restituisce l'insieme degli attrezzi nella borsa ordinati
+	 * per peso e quindi, a parità di peso, per nome
+	 */
+	
+	public SortedSet<Attrezzo> getSortedOrdinatoPerPeso() {
+
+		SortedSet<Attrezzo> ordinata = new TreeSet<>(new OrdinatorePerPeso());
+		ordinata.addAll(attrezzi);
+		
+		return ordinata;
+	}
+	
+	
+	
+	
+	
 }
 	
 	

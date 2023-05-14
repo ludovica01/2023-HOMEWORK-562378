@@ -136,13 +136,13 @@ public class StanzaTest {
 
 	@Test //Verifica che la stanza non contenga l'attrezzo che non è prensente nella stanza
 	void testHasAttrezzo1() {
-		assertEquals(  false ,  this.prova.hasAttrezzo("lanterna"));		
+		assertEquals(false, this.prova.hasAttrezzo("lanterna"));		
 	}
 	
 
 	@Test //Verifica che la stanza contenga l'attrezzo 
 	void testHasAttrezzo2() {
-		assertEquals(  true ,  this.test.hasAttrezzo("lanterna"));		
+		assertEquals(true, this.test.hasAttrezzo("lanterna"));		
 	}
 
 
@@ -153,13 +153,13 @@ public class StanzaTest {
 	
 	@Test // test che verifica se get attrezzo ritorna l'attrezzo presente nella stanza 
 	void testGetAttrezzo1() {
-		assertEquals(  lanterna ,  this.test.getAttrezzo("lanterna"));		
+		assertEquals(lanterna, this.test.getAttrezzo("lanterna"));		
 	}
 	
 	
 	@Test // test che verifica che get attrezzo ritorni null per un attrezzo che non è nella stanza 
 	void testGetAttrezzo2() {
-		assertEquals(  spada ,  this.prova.getAttrezzo("spada"));		
+		assertEquals(spada, this.prova.getAttrezzo("spada"));		
 	}
 	
 }

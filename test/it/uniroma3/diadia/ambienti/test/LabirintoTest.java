@@ -51,7 +51,8 @@ public class LabirintoTest {
 	
 	@Test //test con stanza di default
 	public void testGetStanzaCorrente2() {
-		assertEquals(  "Atrio"  ,this.scuola.getStanzaCorrente().getNome() );
+		scuola.setStanzaCorrente(camera);
+		assertEquals("camera",this.scuola.getStanzaCorrente().getNome());
 	}
 
 	/*
@@ -59,7 +60,8 @@ public class LabirintoTest {
 	 */
 	@Test  //test stanza vincente di default 
 	public void testGetStanzaVincente1() {
-		assertEquals(  "Biblioteca"  ,this.universita.getStanzaVincente().getNome() );
+		labirinto.setStanzaVincente(stanza);
+		assertEquals("stanza",this.labirinto.getStanzaVincente().getNome() );
 	} 
 	
 	/*
@@ -67,7 +69,7 @@ public class LabirintoTest {
 	 */
 	@Test 
 	public void testSetStanzaCorrente1() {
-		assertEquals("camera" , this.universita.getStanzaCorrente().getNome());
+		assertEquals("camera", this.universita.getStanzaCorrente().getNome());
 	}
 	
 }

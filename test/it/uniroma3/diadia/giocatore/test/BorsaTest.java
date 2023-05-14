@@ -80,17 +80,17 @@ public class BorsaTest {
 	 */
 	@Test //rimozione attrezzo 
 	public void testRemoveAttrezzo1() {
-		assertEquals(true, this.sacca.removeAttrezzo("accessorio"));
+		assertEquals(accessorio, this.sacca.removeAttrezzo(accessorio.getNome()));
 	}
 	
 	@Test //rimozione attrezzo inesistente
 	public void testRemoveAttrezzo2() {
-		assertEquals(false, this.sacca.removeAttrezzo("pistola"));
+		assertNull(this.sacca.removeAttrezzo(arma.getNome()));
 	}
 	
 	@Test //rimozione attrezzo in una borsa con piu attrezzi
 	public void testRemoveAttrezzo3() {
-		assertEquals(true, this.sacca.removeAttrezzo("attrezzo"));
+		assertEquals(attrezzo, this.sacca.removeAttrezzo(attrezzo.getNome()));
 	}
 
 	
@@ -100,13 +100,170 @@ public class BorsaTest {
 	
 	@Test //Verifica che l'attrezzo "attrezzo" sia nella borsa
 	void testHasAttrezzo1() {
-		assertEquals(true, this.sacca.hasAttrezzo("attrezzo"));
+		assertEquals(true, this.sacca.hasAttrezzo(attrezzo.getNome()));
 	}
 
 
 	@Test //Verifica che l'attrezzo "utensile" non sia nella borsa
 	void testHasAttrezzo2() {
-		assertEquals(false, this.borsa.hasAttrezzo("accessorio"));
+		assertEquals(false, this.borsa.hasAttrezzo(accessorio.getNome()));
+	}
+	
+	
+	/**
+	 * test per getContenutoOrdinatoPerPeso
+	 */
+	@Test
+	void testGetContenutoOrdinatoPerPeso() {
+		assertEquals("[accessorio, attrezzo]", sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testGetContenutoOrdinatoPerPesoPiuAttrezzi() {			// aggiungo altri attrezzi in maniera non ordinata
+		Attrezzo attr = new Attrezzo("attr",4);
+		Attrezzo attr1 = new Attrezzo("attr1",9);
+		sacca.addAttrezzo(attr1);
+		sacca.addAttrezzo(attr);
+		assertEquals("[accessorio, attr, attrezzo, attr1]", sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	/** test non minimali **/
+	
+	@Test
+	void testGetContenutoOrdinatoPerPesoNomiUguali() {			// alcuni attrezzi hanno nome uguale ma pesi diversi
+		Attrezzo accessorio1 = new Attrezzo("accessorio",5);
+		sacca.addAttrezzo(accessorio1);
+		assertEquals("[accessorio, accessorio, attrezzo]", sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testGetContenutoOrdinatoPerPesoPesiUguali() {			// attrezzi con stessi nomi ma pesi diversi
+		Attrezzo attrezzo1 = new Attrezzo("nomeDiverso",3);
+		sacca.addAttrezzo(attrezzo1);
+		assertEquals("[accessorio, nomeDiverso, attrezzo]",sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	
+	
+	/**
+	 * test per getContenutoOrdinatoPerNome
+	 */
+	
+	@Test
+	void testGetContenutoOrdinatoPerNome() {
+		assertEquals("[accessorio, attrezzo]", sacca.getContenutoOrdinatoPerNome().toString());
+
+	}
+	
+	@Test
+	void testGetContenutoOrdinatoPerNomePiuAttrezzi() {				// aggiungo altri attrezzi in maniera non ordinata
+		Attrezzo attr = new Attrezzo("attr",4);
+		Attrezzo attr1 = new Attrezzo("attr1",9);
+		sacca.addAttrezzo(attr1);
+		sacca.addAttrezzo(attr);
+		assertEquals("[accessorio, attr, attrezzo, attr1]", sacca.getContenutoOrdinatoPerNome().toString());
+	}
+	
+	
+	/**
+	 * test per ordinaPerNome
+	 */
+	@Test
+	void testOrdinaPerNome() {						// ordino per nome gli attrezzi
+		assertEquals("[accessorio, attrezzo]", sacca.ordinaPerNome().toString());
+	}
+	
+	@Test
+	void testOrdinaPerNomePiuAttrezzi() {			// aggiungo altri attrezzi in maniera non ordinata
+		Attrezzo attr = new Attrezzo("attr",4);
+		Attrezzo attr1 = new Attrezzo("attr1",9);
+		sacca.addAttrezzo(attr1);
+		sacca.addAttrezzo(attr);
+		assertEquals("[accessorio, attr, attr1, attrezzo]", sacca.ordinaPerNome().toString());
+	}
+	
+	
+	/**
+	 * test per ordinaPerPeso
+	 */
+	@Test
+	void testOrdinaPerPeso() {						// ordino per nome gli attrezzi
+		assertEquals("[accessorio, attrezzo]", sacca.ordinaPerPeso().toString());
+	}
+	
+	@Test
+	void testOrdinaPerPesoPiuAttrezzi() {			// aggiungo altri attrezzi in maniera non ordinata
+		Attrezzo attr = new Attrezzo("attr",4);
+		Attrezzo attr1 = new Attrezzo("attr1",9);
+		sacca.addAttrezzo(attr);
+		sacca.addAttrezzo(attr1);
+		assertEquals("[accessorio, attr, attrezzo, attr1]", sacca.ordinaPerPeso().toString());
+	}
+	
+	/** test non minimali **/
+	
+	@Test
+	void testOrdinaPerPesoNomiUguali() {			// alcuni attrezzi hanno nome uguale ma pesi diversi
+		Attrezzo accessorio1 = new Attrezzo("accessorio",5);
+		sacca.addAttrezzo(accessorio1);
+		assertEquals("[accessorio, accessorio, attrezzo]", sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testOrdinaPerPesoPesiUguali() {			// attrezzi con stessi nomi ma pesi diversi
+		Attrezzo attrezzo1 = new Attrezzo("nomeDiverso",3);
+		sacca.addAttrezzo(attrezzo1);
+		assertEquals("[accessorio, nomeDiverso, attrezzo]",sacca.getContenutoOrdinatoPerPeso().toString());
+	}
+	
+	
+	
+	
+	
+	
+	/*
+	 * test per getSortedOrdinatoPerPeso
+	 */
+	@Test			// verifica se due attrezzi con stesso nome ma peso diverso rimangano distinti
+	void testGetSortedOrdinatoPerPeso() {
+		Attrezzo accessorio1 = new Attrezzo("accessorio1",5);
+		this.sacca.addAttrezzo(accessorio1);
+		assertEquals("[accessorio, accessorio1, attrezzo]", sacca.getSortedOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testGetSortedOrdinatoPerPeso1() {			// aggiungo due volte attrezzo con stesso nome e peso di un altro
+		Attrezzo accessorio1 = new Attrezzo("accessorio1",3);
+		this.sacca.addAttrezzo(accessorio1);
+		assertEquals("[accessorio, accessorio1, attrezzo]", sacca.getSortedOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testGetSortedOrdinatoPerPesoAggiuntoDueVolte() {			// aggiungo due volte lo stesso attrezzo
+		this.sacca.addAttrezzo(accessorio);
+		assertEquals("[accessorio, attrezzo]", sacca.getSortedOrdinatoPerPeso().toString());
+	}
+	
+/** test non minimali **/
+	
+	@Test
+	void testGetSortedOrdinatoPerPesoNomiUguali() {			// alcuni attrezzi hanno nome uguale ma pesi diversi
+		Attrezzo accessorio1 = new Attrezzo("accessorio",5);
+		sacca.addAttrezzo(accessorio1);
+		assertEquals("[accessorio, accessorio, attrezzo]", sacca.getSortedOrdinatoPerPeso().toString());
+	}
+	
+	@Test
+	void testGetSortedOrdinatoPerPesoPesiUguali() {			// attrezzi con stessi nomi ma pesi diversi
+		Attrezzo attrezzo1 = new Attrezzo("nomeDiverso",3);
+		sacca.addAttrezzo(attrezzo1);
+		assertEquals("[accessorio, nomeDiverso, attrezzo]",sacca.getSortedOrdinatoPerPeso().toString());
 	}
 
+	
+	
+	
+	
+	
+	
 }
